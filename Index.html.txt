@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats Lab — Interactive Assignment Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f0e17;
+  --surface: #1a1928;
+  --surface2: #232237;
+  --border: rgba(255,255,255,0.08);
+  --yellow: #ffd23f;
+  --coral: #ff6b6b;
+  --teal: #38d9a9;
+  --blue: #74b9ff;
+  --purple: #a29bfe;
+  --pink: #fd79a8;
+  --white: #fffffe;
+  --muted: rgba(255,255,255,0.45);
+  --radius: 18px;
+  --shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+input[type=range] { -webkit-appearance: none; appearance: none; }
+button { cursor: pointer; font-family: 'Poppins', sans-serif; }
+
+/* ═══════════════════════════════════════════
+SIDEBAR NAV
+═══════════════════════════════════════════ */
+.sidebar {
+position: fixed; left: 0; top: 0; bottom: 0;
+width: 72px; background: var(–surface);
+border-right: 1px solid var(–border);
+display: flex; flex-direction: column;
+align-items: center; padding: 24px 0; gap: 8px;
+z-index: 200;
+}
+.sidebar-logo {
+font-family: ‘Fredoka One’, cursive;
+font-size: 22px; color: var(–yellow);
+margin-bottom: 16px;
+}
+.nav-btn {
+width: 48px; height: 48px; border-radius: 14px;
+background: transparent; border: 1px solid transparent;
+display: flex; align-items: center; justify-content: center;
+font-size: 20px; color: var(–muted);
+transition: all 0.2s; text-decoration: none;
+position: relative;
+}
+.nav-btn:hover, .nav-btn.active {
+background: rgba(255,210,63,0.12);
+border-color: rgba(255,210,63,0.3);
+color: var(–yellow);
+}
+.nav-btn .tooltip {
+position: absolute; left: 60px;
+background: var(–surface2); color: var(–white);
+font-size: 12px; font-weight: 600;
+padding: 6px 12px; border-radius: 8px;
+white-space: nowrap; pointer-events: none;
+opacity: 0; transition: opacity 0.2s;
+border: 1px solid var(–border);
+}
+.nav-btn:hover .tooltip { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+MAIN LAYOUT
+═══════════════════════════════════════════ */
+.main { margin-left: 72px; }
+
+/* ═══════════════════════════════════════════
+SECTIONS
+═══════════════════════════════════════════ */
+.page-section {
+min-height: 100vh;
+padding: 60px 48px;
+display: none;
+}
+.page-section.active { display: block; }
+
+.section-eyebrow {
+font-size: 11px; font-weight: 700; letter-spacing: 3px;
+color: var(–yellow); text-transform: uppercase;
+margin-bottom: 12px;
+}
+.section-title {
+font-family: ‘Fredoka One’, cursive;
+font-size: clamp(32px, 5vw, 60px);
+line-height: 1.1; margin-bottom: 16px;
+}
+.section-desc {
+font-size: 16px; color: var(–muted);
+max-width: 600px; line-height: 1.8;
+margin-bottom: 48px;
+}
+
+/* ═══════════════════════════════════════════
+HOME PAGE
+═══════════════════════════════════════════ */
+#home {
+display: flex; flex-direction: column;
+justify-content: center; min-height: 100vh;
+background: radial-gradient(ellipse at 80% 20%, rgba(255,210,63,0.06) 0%, transparent 60%),
+radial-gradient(ellipse at 20% 80%, rgba(116,185,255,0.06) 0%, transparent 60%);
+padding: 80px 48px;
+}
+#home.active { display: flex; }
+
+.home-badge {
+display: inline-flex; align-items: center; gap: 8px;
+background: rgba(255,210,63,0.1); border: 1px solid rgba(255,210,63,0.3);
+border-radius: 50px; padding: 8px 18px;
+font-size: 13px; font-weight: 600; color: var(–yellow);
+margin-bottom: 28px; width: fit-content;
+}
+.badge-dot { width: 8px; height: 8px; border-radius: 50%; background: var(–yellow); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+.home-title {
+font-family: ‘Fredoka One’, cursive;
+font-size: clamp(42px, 7vw, 88px);
+line-height: 1; margin-bottom: 8px;
+}
+.home-title .line2 { color: var(–yellow); }
+.home-subtitle {
+font-size: clamp(16px, 2vw, 20px);
+color: var(–muted); max-width: 560px;
+margin-bottom: 48px; line-height: 1.8;
+}
+
+.home-cards {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 16px; max-width: 900px; margin-bottom: 48px;
+}
+.home-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 28px 24px;
+cursor: pointer; transition: all 0.25s;
+position: relative; overflow: hidden;
+}
+.home-card::before {
+content: ‘’; position: absolute;
+inset: 0; opacity: 0; transition: opacity 0.25s;
+border-radius: var(–radius);
+}
+.home-card:hover { transform: translateY(-4px); box-shadow: var(–shadow); }
+.home-card:hover::before { opacity: 1; }
+
+.hc-yellow::before { background: rgba(255,210,63,0.06); }
+.hc-coral::before  { background: rgba(255,107,107,0.06); }
+.hc-teal::before   { background: rgba(56,217,169,0.06); }
+.hc-blue::before   { background: rgba(116,185,255,0.06); }
+.hc-purple::before { background: rgba(162,155,254,0.06); }
+
+.hc-yellow { border-color: rgba(255,210,63,0.2); }
+.hc-coral  { border-color: rgba(255,107,107,0.2); }
+.hc-teal   { border-color: rgba(56,217,169,0.2); }
+.hc-blue   { border-color: rgba(116,185,255,0.2); }
+.hc-purple { border-color: rgba(162,155,254,0.2); }
+
+.hc-icon { font-size: 36px; margin-bottom: 14px; }
+.hc-num {
+font-family: ‘Fredoka One’, cursive;
+font-size: 11px; letter-spacing: 2px;
+margin-bottom: 6px; opacity: 0.5;
+}
+.hc-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.hc-desc { font-size: 12px; color: var(–muted); line-height: 1.5; }
+.hc-arrow { position: absolute; right: 16px; top: 16px; font-size: 18px; opacity: 0.3; transition: opacity 0.2s; }
+.home-card:hover .hc-arrow { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+CONCEPT PAGE
+═══════════════════════════════════════════ */
+.concept-story {
+display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+margin-bottom: 48px;
+}
+.story-panel {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 36px;
+}
+.story-emoji { font-size: 48px; margin-bottom: 16px; }
+.story-panel h3 { font-family: ‘Fredoka One’, cursive; font-size: 22px; margin-bottom: 12px; }
+.story-panel p { font-size: 14px; color: var(–muted); line-height: 1.9; }
+.story-panel p strong { color: var(–white); }
+
+.r-scale {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 36px; margin-bottom: 32px;
+}
+.r-scale h3 { font-family: ‘Fredoka One’, cursive; font-size: 22px; margin-bottom: 24px; }
+
+.r-track {
+position: relative; height: 20px;
+background: linear-gradient(to right, var(–coral), #666, var(–teal));
+border-radius: 50px; margin-bottom: 12px;
+}
+.r-marker {
+position: absolute; top: -8px;
+width: 36px; height: 36px; border-radius: 50%;
+background: var(–yellow); border: 3px solid var(–bg);
+display: flex; align-items: center; justify-content: center;
+font-size: 10px; font-weight: 800; color: var(–bg);
+transition: left 0.6s cubic-bezier(.34,1.56,.64,1);
+transform: translateX(-50%);
+box-shadow: 0 0 0 4px rgba(255,210,63,0.3);
+}
+
+.r-labels {
+display: flex; justify-content: space-between;
+font-size: 12px; color: var(–muted); margin-bottom: 20px;
+}
+
+.r-scenarios { display: flex; gap: 10px; flex-wrap: wrap; }
+.r-btn {
+padding: 8px 18px; border-radius: 50px;
+font-size: 13px; font-weight: 600;
+background: var(–surface2); border: 1px solid var(–border);
+color: var(–white); transition: all 0.2s;
+}
+.r-btn:hover { border-color: var(–yellow); color: var(–yellow); }
+.r-btn.active-r { background: var(–yellow); color: var(–bg); border-color: var(–yellow); }
+
+.r-explanation {
+margin-top: 20px; padding: 16px 20px;
+background: rgba(255,210,63,0.08); border: 1px solid rgba(255,210,63,0.2);
+border-radius: 12px; font-size: 14px; color: var(–muted);
+}
+.r-explanation strong { color: var(–yellow); }
+
+/* ═══════════════════════════════════════════
+FORMULA PAGE
+═══════════════════════════════════════════ */
+.formula-builder {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 40px; margin-bottom: 32px;
+}
+.fb-tabs { display: flex; gap: 8px; margin-bottom: 32px; }
+.fb-tab {
+padding: 10px 24px; border-radius: 50px;
+font-size: 13px; font-weight: 700;
+background: var(–surface2); border: 1px solid var(–border);
+color: var(–muted); transition: all 0.2s;
+}
+.fb-tab.active { background: var(–yellow); color: var(–bg); border-color: var(–yellow); }
+
+.formula-visual {
+display: flex; align-items: center;
+gap: 12px; flex-wrap: wrap; margin-bottom: 32px;
+}
+.fv-piece {
+padding: 14px 20px; border-radius: 14px;
+font-family: ‘Fredoka One’, cursive; font-size: 20px;
+cursor: pointer; transition: all 0.2s;
+position: relative; border: 2px solid transparent;
+}
+.fv-piece.highlighted { transform: scale(1.08); }
+.fv-piece .fv-hint {
+position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
+background: var(–surface2); border: 1px solid var(–border);
+font-family: ‘Poppins’, sans-serif;
+font-size: 11px; font-weight: 600;
+padding: 4px 10px; border-radius: 6px;
+white-space: nowrap; opacity: 0; transition: opacity 0.2s;
+pointer-events: none; z-index: 10;
+}
+.fv-piece:hover .fv-hint { opacity: 1; }
+
+.fv-yellow { background: rgba(255,210,63,0.15); color: var(–yellow); border-color: rgba(255,210,63,0.3); }
+.fv-coral  { background: rgba(255,107,107,0.15); color: var(–coral);  border-color: rgba(255,107,107,0.3); }
+.fv-teal   { background: rgba(56,217,169,0.15);  color: var(–teal);   border-color: rgba(56,217,169,0.3); }
+.fv-blue   { background: rgba(116,185,255,0.15); color: var(–blue);   border-color: rgba(116,185,255,0.3); }
+.fv-muted  { background: rgba(255,255,255,0.05); color: var(–muted);  border-color: transparent; }
+
+.formula-legend {
+display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 12px;
+}
+.fl-item {
+background: var(–surface2); border: 1px solid var(–border);
+border-radius: 12px; padding: 16px 18px;
+display: flex; gap: 14px; align-items: flex-start;
+cursor: pointer; transition: all 0.2s;
+}
+.fl-item:hover { border-color: var(–yellow); }
+.fl-sym {
+font-family: ‘Fredoka One’, cursive; font-size: 22px;
+width: 36px; flex-shrink: 0; text-align: center; line-height: 1;
+}
+.fl-text strong { display: block; font-size: 13px; margin-bottom: 2px; }
+.fl-text span { font-size: 12px; color: var(–muted); line-height: 1.5; }
+
+/* ═══════════════════════════════════════════
+CALCULATOR PAGE
+═══════════════════════════════════════════ */
+.calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+.calc-panel {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 36px;
+}
+.calc-panel h3 {
+font-family: ‘Fredoka One’, cursive;
+font-size: 22px; margin-bottom: 6px;
+}
+.calc-panel .calc-sub { font-size: 13px; color: var(–muted); margin-bottom: 28px; }
+
+.slider-group { margin-bottom: 24px; }
+.slider-label {
+display: flex; justify-content: space-between;
+font-size: 13px; font-weight: 600; margin-bottom: 10px;
+}
+.slider-label span { color: var(–muted); }
+.slider-val { color: var(–yellow) !important; font-weight: 800 !important; }
+
+input[type=range] {
+width: 100%; height: 6px; border-radius: 50px;
+background: var(–surface2); outline: none;
+accent-color: var(–yellow);
+}
+input[type=range]::-webkit-slider-thumb {
+-webkit-appearance: none; appearance: none;
+width: 20px; height: 20px; border-radius: 50%;
+background: var(–yellow); cursor: pointer;
+border: 3px solid var(–bg);
+box-shadow: 0 0 0 3px rgba(255,210,63,0.3);
+}
+
+.calc-result {
+background: rgba(255,210,63,0.08);
+border: 1px solid rgba(255,210,63,0.2);
+border-radius: 14px; padding: 24px;
+text-align: center;
+}
+.calc-result .cr-label { font-size: 11px; letter-spacing: 2px; color: var(–muted); margin-bottom: 8px; }
+.calc-result .cr-value {
+font-family: ‘Fredoka One’, cursive;
+font-size: 48px; color: var(–yellow); line-height: 1;
+}
+.calc-result .cr-desc { font-size: 13px; color: var(–muted); margin-top: 8px; }
+
+.r-meter {
+width: 100%; height: 12px; border-radius: 50px; overflow: hidden;
+background: var(–surface2); margin: 16px 0;
+}
+.r-fill {
+height: 100%; border-radius: 50px;
+background: linear-gradient(to right, var(–coral), var(–yellow), var(–teal));
+transition: width 0.4s ease;
+}
+
+/* predict panel */
+.predict-panel {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 36px; grid-column: 1 / -1;
+}
+
+.predict-input-row {
+display: flex; align-items: center; gap: 16px;
+margin-bottom: 28px; flex-wrap: wrap;
+}
+.predict-label { font-size: 16px; font-weight: 700; white-space: nowrap; }
+.predict-input {
+flex: 1; min-width: 200px; max-width: 300px;
+background: var(–surface2); border: 2px solid var(–border);
+border-radius: 12px; padding: 14px 18px;
+font-family: ‘Poppins’, sans-serif; font-size: 18px; font-weight: 700;
+color: var(–white); outline: none; transition: border-color 0.2s;
+}
+.predict-input:focus { border-color: var(–yellow); }
+.predict-btn {
+padding: 14px 32px; border-radius: 12px;
+background: var(–yellow); color: var(–bg);
+font-size: 15px; font-weight: 800;
+border: none; transition: all 0.2s;
+}
+.predict-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,210,63,0.3); }
+
+.predict-result-row {
+display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+}
+.pred-card {
+background: var(–surface2); border: 1px solid var(–border);
+border-radius: 14px; padding: 24px; text-align: center;
+transition: all 0.3s;
+}
+.pred-card.lit { border-color: var(–teal); background: rgba(56,217,169,0.08); }
+.pred-card .pc-label { font-size: 11px; letter-spacing: 2px; color: var(–muted); margin-bottom: 6px; }
+.pred-card .pc-val {
+font-family: ‘Fredoka One’, cursive;
+font-size: 32px; color: var(–teal);
+}
+.pred-card .pc-desc { font-size: 12px; color: var(–muted); margin-top: 6px; line-height: 1.5; }
+
+/* ═══════════════════════════════════════════
+CHART PAGE
+═══════════════════════════════════════════ */
+.chart-controls {
+display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;
+}
+.chart-ctrl-btn {
+padding: 8px 18px; border-radius: 50px;
+font-size: 13px; font-weight: 600;
+background: var(–surface); border: 1px solid var(–border);
+color: var(–muted); transition: all 0.2s;
+}
+.chart-ctrl-btn:hover { color: var(–white); border-color: rgba(255,255,255,0.3); }
+.chart-ctrl-btn.on { background: var(–surface2); color: var(–white); border-color: rgba(255,255,255,0.3); }
+.chart-ctrl-btn.on.yellow { background: rgba(255,210,63,0.15); color: var(–yellow); border-color: rgba(255,210,63,0.4); }
+.chart-ctrl-btn.on.teal { background: rgba(56,217,169,0.15); color: var(–teal); border-color: rgba(56,217,169,0.4); }
+.chart-ctrl-btn.on.blue { background: rgba(116,185,255,0.15); color: var(–blue); border-color: rgba(116,185,255,0.4); }
+
+.chart-container {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 32px; margin-bottom: 24px;
+}
+.chart-tip { font-size: 13px; color: var(–muted); text-align: center; }
+
+.stats-row {
+display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 24px;
+}
+.stat-box {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px; padding: 20px; text-align: center;
+}
+.stat-box .sb-val {
+font-family: ‘Fredoka One’, cursive; font-size: 28px; margin-bottom: 4px;
+}
+.stat-box .sb-lbl { font-size: 11px; letter-spacing: 1px; color: var(–muted); }
+
+/* ═══════════════════════════════════════════
+QUIZ PAGE
+═══════════════════════════════════════════ */
+.quiz-container {
+max-width: 680px;
+}
+.quiz-progress {
+display: flex; gap: 8px; margin-bottom: 32px;
+}
+.qp-dot {
+flex: 1; height: 6px; border-radius: 50px;
+background: var(–surface2); transition: background 0.3s;
+}
+.qp-dot.done { background: var(–teal); }
+.qp-dot.current { background: var(–yellow); }
+
+.quiz-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 40px; margin-bottom: 24px;
+}
+.quiz-q-num { font-size: 12px; letter-spacing: 2px; color: var(–muted); margin-bottom: 12px; }
+.quiz-q-text { font-family: ‘Fredoka One’, cursive; font-size: 24px; line-height: 1.3; margin-bottom: 32px; }
+
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
+.quiz-opt {
+padding: 16px 22px; border-radius: 12px;
+background: var(–surface2); border: 2px solid var(–border);
+font-size: 15px; font-weight: 600; color: var(–white);
+text-align: left; transition: all 0.2s;
+}
+.quiz-opt:hover:not(:disabled) { border-color: var(–yellow); color: var(–yellow); }
+.quiz-opt.correct { background: rgba(56,217,169,0.12); border-color: var(–teal); color: var(–teal); }
+.quiz-opt.wrong   { background: rgba(255,107,107,0.12); border-color: var(–coral); color: var(–coral); }
+.quiz-opt:disabled { cursor: default; }
+
+.quiz-feedback {
+padding: 16px 20px; border-radius: 12px;
+font-size: 14px; font-weight: 600; margin-top: 16px;
+display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.good { background: rgba(56,217,169,0.1); color: var(–teal); border: 1px solid rgba(56,217,169,0.3); }
+.quiz-feedback.bad  { background: rgba(255,107,107,0.1); color: var(–coral); border: 1px solid rgba(255,107,107,0.3); }
+
+.quiz-next-btn {
+display: none; margin-top: 20px;
+padding: 14px 32px; border-radius: 12px;
+background: var(–yellow); color: var(–bg);
+font-size: 15px; font-weight: 800; border: none;
+transition: all 0.2s;
+}
+.quiz-next-btn.show { display: inline-flex; align-items: center; gap: 8px; }
+.quiz-next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,210,63,0.3); }
+
+.quiz-score {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 60px 40px; text-align: center;
+display: none;
+}
+.quiz-score.show { display: block; }
+.qs-emoji { font-size: 64px; margin-bottom: 20px; }
+.qs-title { font-family: ‘Fredoka One’, cursive; font-size: 40px; margin-bottom: 12px; }
+.qs-num { font-size: 18px; color: var(–muted); margin-bottom: 32px; }
+.qs-val { color: var(–yellow); font-weight: 800; }
+.quiz-restart-btn {
+padding: 14px 36px; border-radius: 12px;
+background: var(–yellow); color: var(–bg);
+font-size: 15px; font-weight: 800; border: none;
+transition: all 0.2s;
+}
+.quiz-restart-btn:hover { transform: translateY(-2px); }
+
+/* ═══════════════════════════════════════════
+CHECKLIST PAGE
+═══════════════════════════════════════════ */
+.checklist-header {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: var(–radius);
+padding: 32px; margin-bottom: 24px;
+display: flex; align-items: center; gap: 24px;
+}
+.cl-progress-ring { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.cl-progress-ring svg { transform: rotate(-90deg); }
+.cl-pct {
+position: absolute; inset: 0;
+display: flex; align-items: center; justify-content: center;
+font-family: ‘Fredoka One’, cursive; font-size: 22px; color: var(–yellow);
+}
+.cl-header-text h3 { font-family: ‘Fredoka One’, cursive; font-size: 24px; margin-bottom: 6px; }
+.cl-header-text p { font-size: 14px; color: var(–muted); }
+
+.check-section { margin-bottom: 32px; }
+.check-section-title {
+font-family: ‘Fredoka One’, cursive; font-size: 18px;
+color: var(–muted); margin-bottom: 14px; display: flex; gap: 10px; align-items: center;
+}
+.cs-tag {
+font-family: ‘Poppins’, sans-serif;
+font-size: 10px; font-weight: 700; letter-spacing: 2px;
+padding: 3px 10px; border-radius: 50px;
+}
+
+.check-item {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 14px; padding: 20px 24px;
+display: flex; align-items: flex-start; gap: 16px;
+margin-bottom: 10px; cursor: pointer; transition: all 0.25s;
+user-select: none;
+}
+.check-item:hover { border-color: rgba(255,255,255,0.15); }
+.check-item.done { border-color: rgba(56,217,169,0.3); background: rgba(56,217,169,0.04); }
+
+.ci-box {
+width: 26px; height: 26px; border-radius: 8px;
+border: 2px solid var(–border); flex-shrink: 0;
+display: flex; align-items: center; justify-content: center;
+font-size: 14px; transition: all 0.2s;
+}
+.check-item.done .ci-box { background: var(–teal); border-color: var(–teal); }
+
+.ci-content strong { display: block; font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.ci-content span { font-size: 13px; color: var(–muted); line-height: 1.5; }
+.check-item.done .ci-content strong { color: var(–teal); }
+
+.deadline-banner {
+background: linear-gradient(135deg, rgba(255,107,107,0.1), rgba(253,121,168,0.1));
+border: 1px solid rgba(255,107,107,0.3);
+border-radius: var(–radius);
+padding: 28px 32px;
+display: flex; align-items: center; gap: 20px;
+margin-top: 32px;
+}
+.db-icon { font-size: 40px; }
+.db-text h3 { font-family: ‘Fredoka One’, cursive; font-size: 22px; color: var(–coral); margin-bottom: 4px; }
+.db-text p { font-size: 14px; color: var(–muted); }
+
+/* ═══════════════════════════════════════════
+RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+.sidebar { width: 56px; }
+.main { margin-left: 56px; }
+.page-section { padding: 48px 20px; }
+.concept-story { grid-template-columns: 1fr; }
+.calc-grid { grid-template-columns: 1fr; }
+.predict-result-row { grid-template-columns: 1fr; }
+.stats-row { grid-template-columns: repeat(2,1fr); }
+.home-title { font-size: 40px; }
+}
+
+/* ═══════════════════════════════════════════
+TOOLTIP OVERLAY
+═══════════════════════════════════════════ */
+.term-tooltip {
+position: fixed; z-index: 500;
+background: var(–surface2); border: 1px solid var(–yellow);
+border-radius: 14px; padding: 16px 20px; max-width: 280px;
+font-size: 13px; pointer-events: none;
+box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+opacity: 0; transition: opacity 0.2s;
+}
+.term-tooltip strong { color: var(–yellow); display: block; margin-bottom: 4px; }
+
+/* glow animation for result numbers */
+@keyframes glowPop {
+0% { transform: scale(0.8); opacity: 0; }
+60% { transform: scale(1.1); }
+100% { transform: scale(1); opacity: 1; }
+}
+.glow-pop { animation: glowPop 0.4s ease both; }
+</style>
+
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+
+<nav class="sidebar">
+  <div class="sidebar-logo">Σ</div>
+  <a class="nav-btn active" onclick="go('home')" href="#">🏠<span class="tooltip">Home</span></a>
+  <a class="nav-btn" onclick="go('concept')" href="#">💡<span class="tooltip">The Concept</span></a>
+  <a class="nav-btn" onclick="go('formula')" href="#">🧮<span class="tooltip">Formulas</span></a>
+  <a class="nav-btn" onclick="go('calc')" href="#">⚡<span class="tooltip">Calculator</span></a>
+  <a class="nav-btn" onclick="go('chart')" href="#">📊<span class="tooltip">Live Chart</span></a>
+  <a class="nav-btn" onclick="go('quiz')" href="#">🎯<span class="tooltip">Quiz</span></a>
+  <a class="nav-btn" onclick="go('checklist')" href="#">✅<span class="tooltip">Checklist</span></a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HOME
+══════════════════════════════════════════ -->
+
+<div class="main">
+<section class="page-section active" id="home">
+  <div class="home-badge"><div class="badge-dot"></div>Statistics — Semester II · Nirma University</div>
+  <h1 class="home-title">Stats Lab<br><span class="line2">Interactive.</span></h1>
+  <p class="home-subtitle">Everything you need to understand, calculate, and submit your Correlation & Regression assignment — in one place.</p>
+
+  <div class="home-cards">
+    <div class="home-card hc-yellow" onclick="go('concept')">
+      <div class="hc-arrow">→</div>
+      <div class="hc-icon">💡</div>
+      <div class="hc-num">01 · CONCEPT</div>
+      <div class="hc-title">The Big Idea</div>
+      <div class="hc-desc">Understand what correlation & regression actually mean</div>
+    </div>
+    <div class="home-card hc-coral" onclick="go('formula')">
+      <div class="hc-arrow">→</div>
+      <div class="hc-icon">🧮</div>
+      <div class="hc-num">02 · FORMULAS</div>
+      <div class="hc-title">Break the Math</div>
+      <div class="hc-desc">Every symbol explained in plain English — hover to explore</div>
+    </div>
+    <div class="home-card hc-teal" onclick="go('calc')">
+      <div class="hc-arrow">→</div>
+      <div class="hc-icon">⚡</div>
+      <div class="hc-num">03 · CALCULATOR</div>
+      <div class="hc-title">Play with Numbers</div>
+      <div class="hc-desc">Drag sliders to see how r and predictions change live</div>
+    </div>
+    <div class="home-card hc-blue" onclick="go('chart')">
+      <div class="hc-arrow">→</div>
+      <div class="hc-icon">📊</div>
+      <div class="hc-num">04 · LIVE CHART</div>
+      <div class="hc-title">See Your Data</div>
+      <div class="hc-desc">Interactive scatter plot with regression line overlay</div>
+    </div>
+    <div class="home-card hc-purple" onclick="go('quiz')">
+      <div class="hc-arrow">→</div>
+      <div class="hc-icon">🎯</div>
+      <div class="hc-num">05 · QUIZ</div>
+      <div class="hc-title">Test Yourself</div>
+      <div class="hc-desc">8 quick questions to make sure you're ready</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CONCEPT
+══════════════════════════════════════════ -->
+
+<section class="page-section" id="concept">
+  <div class="section-eyebrow">01 · The Concept</div>
+  <h2 class="section-title">What's this all about?</h2>
+  <p class="section-desc">Before touching any formula, let's make sure the idea makes total sense. Two analogies that click.</p>
+
+  <div class="concept-story">
+    <div class="story-panel">
+      <div class="story-emoji">☕</div>
+      <h3>The Coffee Shop Story</h3>
+      <p>Imagine a coffee shop owner. Every week she spends different amounts on Instagram ads. She notices something: <strong>weeks with more ad spend = weeks with more customers.</strong><br><br>
+      That relationship — between what she spends (X) and what she earns (Y) — is exactly what your assignment proves.<br><br>
+      <strong>X is the cause. Y is the effect.</strong> Simple as that.</p>
+    </div>
+    <div class="story-panel">
+      <div class="story-emoji">🎯</div>
+      <h3>Two Questions You're Answering</h3>
+      <p><strong>Question 1 (Correlation):</strong> "How strong is the relationship?" Is it a tiny connection or a huge one? This gives you <em>r</em>, a number between -1 and +1.<br><br>
+      <strong>Question 2 (Regression):</strong> "Can I predict sales from ad spend?" This gives you a formula: <em>Ŷ = a + bX</em> — your crystal ball for future predictions.<br><br>
+      Your data answers both with flying colours. <strong>r = 0.9989 ≈ almost perfect!</strong></p>
+    </div>
+  </div>
+
+  <!-- R SCALE INTERACTIVE -->
+
+  <div class="r-scale">
+    <h3>🎚️ What does r actually mean? Move through examples:</h3>
+    <div class="r-track">
+      <div class="r-marker" id="rMarker" style="left:50%">0</div>
+    </div>
+    <div class="r-labels">
+      <span>r = -1 (perfect negative)</span>
+      <span>r = 0 (no link)</span>
+      <span>r = +1 (perfect positive)</span>
+    </div>
+    <div class="r-scenarios">
+      <button class="r-btn" onclick="setR(-0.95,'📉 As temperature drops, hot coffee sales rise. Strong but opposite direction.')">❄️ Cold days & hot coffee</button>
+      <button class="r-btn" onclick="setR(-0.3,'📉 Weak negative link — price goes up, but only slightly fewer sales.')">💲 Price vs. Sales (weak)</button>
+      <button class="r-btn" onclick="setR(0,'😐 No connection at all — knowing one tells you nothing about the other.')">🎲 Shoe size & exam score</button>
+      <button class="r-btn" onclick="setR(0.7,'📈 Decent positive link — more study hours, usually better grades.')">📚 Study hours & grades</button>
+      <button class="r-btn active-r" onclick="setR(0.9989,'🚀 YOUR assignment result! Almost perfect. Ad spend & sales are extremely strongly linked.')">🏆 YOUR r = 0.9989</button>
+    </div>
+    <div class="r-explanation" id="rExplanation">
+      🚀 <strong>YOUR r = 0.9989</strong> — Almost perfect positive relationship. Ad spend and sales move together in near-perfect sync.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FORMULA
+══════════════════════════════════════════ -->
+
+<section class="page-section" id="formula">
+  <div class="section-eyebrow">02 · Formulas</div>
+  <h2 class="section-title">Every symbol, explained.</h2>
+  <p class="section-desc">Hover over any coloured piece of the formula to understand it. Click a symbol in the legend below for a full explanation.</p>
+
+  <div class="formula-builder">
+    <div class="fb-tabs">
+      <button class="fb-tab active" onclick="switchFormula('corr', this)">📊 Correlation (r)</button>
+      <button class="fb-tab" onclick="switchFormula('reg', this)">📐 Regression</button>
+    </div>
+
+```
+<!-- CORRELATION FORMULA -->
+<div id="formula-corr">
+  <div style="margin-bottom:8px;font-size:13px;color:var(--muted)">👆 Hover each piece to see what it means</div>
+  <div class="formula-visual" style="margin-bottom:48px">
+    <div class="fv-piece fv-yellow">r<div class="fv-hint">The correlation coefficient — your final answer!</div></div>
+    <div class="fv-piece fv-muted">=<div class="fv-hint">equals</div></div>
+    <div class="fv-piece fv-coral">nΣXY − ΣXΣY<div class="fv-hint">Numerator: measures how X and Y vary together</div></div>
+    <div class="fv-piece fv-muted">÷<div class="fv-hint">divided by</div></div>
+    <div class="fv-piece fv-teal">√[(nΣX²−(ΣX)²)(nΣY²−(ΣY)²)]<div class="fv-hint">Denominator: scales the result to be between -1 and +1</div></div>
+  </div>
+  <div class="formula-legend">
+    <div class="fl-item"><div class="fl-sym" style="color:var(--yellow)">r</div><div class="fl-text"><strong>Correlation Coefficient</strong><span>A number from -1 to +1. Closer to ±1 = stronger relationship. Your r = 0.9989</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--blue)">n</div><div class="fl-text"><strong>Number of data points</strong><span>Simply how many rows of data you have. You have 12 months → n = 12</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--coral)">Σ</div><div class="fl-text"><strong>Sigma = "Sum of all"</strong><span>The fancy maths symbol for "add everything up". ΣX = add all your X values.</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--teal)">ΣXY</div><div class="fl-text"><strong>Sum of (X × Y)</strong><span>For each month, multiply X and Y together. Then add all 12 results.</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--purple)">ΣX²</div><div class="fl-text"><strong>Sum of X squared</strong><span>Square each X value, then add them all up. Different from (ΣX)²!</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--pink)">√</div><div class="fl-text"><strong>Square Root</strong><span>Just the square root symbol. Your calculator handles this — or =SQRT() in Excel.</span></div></div>
+  </div>
+</div>
+
+<!-- REGRESSION FORMULA -->
+<div id="formula-reg" style="display:none">
+  <div style="margin-bottom:8px;font-size:13px;color:var(--muted)">👆 Hover each piece to see what it means</div>
+  <div class="formula-visual" style="flex-direction:column;align-items:flex-start;gap:24px;margin-bottom:48px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="fv-piece fv-coral">b<div class="fv-hint">The slope — how fast sales grow per ₹1L of ads</div></div>
+      <div class="fv-piece fv-muted">=<div class="fv-hint">equals</div></div>
+      <div class="fv-piece fv-teal">[nΣXY − ΣXΣY]<div class="fv-hint">Same numerator as correlation formula!</div></div>
+      <div class="fv-piece fv-muted">÷<div class="fv-hint">divided by</div></div>
+      <div class="fv-piece fv-blue">[nΣX² − (ΣX)²]<div class="fv-hint">How spread out are the X values?</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="fv-piece fv-purple">a<div class="fv-hint">The intercept — the starting point (when X = 0)</div></div>
+      <div class="fv-piece fv-muted">=<div class="fv-hint">equals</div></div>
+      <div class="fv-piece fv-yellow">Ȳ<div class="fv-hint">Average of all Y values = 34.58 Lakhs</div></div>
+      <div class="fv-piece fv-muted">−<div class="fv-hint">minus</div></div>
+      <div class="fv-piece fv-coral">b<div class="fv-hint">The slope you just calculated</div></div>
+      <div class="fv-piece fv-muted">×<div class="fv-hint">multiplied by</div></div>
+      <div class="fv-piece fv-teal">X̄<div class="fv-hint">Average of all X values = 8.29 Lakhs</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <div class="fv-piece fv-yellow">Ŷ<div class="fv-hint">Predicted Sales — what you want to find!</div></div>
+      <div class="fv-piece fv-muted">=<div class="fv-hint">equals</div></div>
+      <div class="fv-piece fv-purple">a<div class="fv-hint">Intercept = 2.07 (your calculated value)</div></div>
+      <div class="fv-piece fv-muted">+<div class="fv-hint">plus</div></div>
+      <div class="fv-piece fv-coral">b<div class="fv-hint">Slope = 3.57 (your calculated value)</div></div>
+      <div class="fv-piece fv-muted">×<div class="fv-hint">multiplied by</div></div>
+      <div class="fv-piece fv-blue">X<div class="fv-hint">Any ad spend value you want to predict for</div></div>
+    </div>
+  </div>
+  <div class="formula-legend">
+    <div class="fl-item"><div class="fl-sym" style="color:var(--yellow)">Ŷ</div><div class="fl-text"><strong>Y-hat = Predicted Sales</strong><span>The sales you'd expect for a given ad spend. Your equation: Ŷ = 2.07 + 3.57X</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--coral)">b</div><div class="fl-text"><strong>Slope = 3.57</strong><span>For every ₹1 Lakh more on ads → sales go up by ₹3.57 Lakhs. This is the "speed"!</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--purple)">a</div><div class="fl-text"><strong>Intercept = 2.07</strong><span>Theoretical sales when ad spend = ₹0. Mostly a mathematical starting point.</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--yellow)">Ȳ</div><div class="fl-text"><strong>Y-bar = Average Sales</strong><span>The mean of all 12 months of sales. In your data: Ȳ = 34.58 Lakhs</span></div></div>
+    <div class="fl-item"><div class="fl-sym" style="color:var(--teal)">X̄</div><div class="fl-text"><strong>X-bar = Average Ad Spend</strong><span>The mean of all 12 months of ad spend. In your data: X̄ = 8.29 Lakhs</span></div></div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CALCULATOR
+══════════════════════════════════════════ -->
+
+<section class="page-section" id="calc">
+  <div class="section-eyebrow">03 · Calculator</div>
+  <h2 class="section-title">Play with the numbers!</h2>
+  <p class="section-desc">Drag the sliders to see how correlation and predictions change in real time.</p>
+
+  <div class="calc-grid">
+    <!-- Correlation Explorer -->
+    <div class="calc-panel">
+      <h3>📊 Correlation Strength</h3>
+      <p class="calc-sub">Adjust how closely the data follows the line and see r change</p>
+
+```
+  <div class="slider-group">
+    <div class="slider-label">
+      <span>How tightly clustered is the data?</span>
+      <span class="slider-val" id="clusterVal">Very Tight</span>
+    </div>
+    <input type="range" id="clusterSlider" min="1" max="10" value="10" oninput="updateCorr(this.value)">
+  </div>
+
+  <div class="calc-result">
+    <div class="cr-label">CORRELATION COEFFICIENT</div>
+    <div class="cr-value" id="corrValue">0.9989</div>
+    <div class="r-meter"><div class="r-fill" id="rFill" style="width:99.89%"></div></div>
+    <div class="cr-desc" id="corrDesc">🔥 Near-perfect positive correlation! This is YOUR actual result.</div>
+  </div>
+</div>
+
+<!-- R² Card -->
+<div class="calc-panel">
+  <h3>🎯 R² — How much does X explain Y?</h3>
+  <p class="calc-sub">R² tells you what percentage of sales variation is explained by ad spend</p>
+
+  <div style="text-align:center;margin:20px 0">
+    <canvas id="pieCanvas" width="180" height="180" style="display:block;margin:0 auto"></canvas>
+  </div>
+
+  <div class="calc-result">
+    <div class="cr-label">R² (COEFFICIENT OF DETERMINATION)</div>
+    <div class="cr-value" id="r2Value" style="font-size:36px">99.78%</div>
+    <div class="cr-desc" id="r2Desc">Ad spend explains <strong>99.78%</strong> of the variation in sales. Only 0.22% is due to other factors.</div>
+  </div>
+</div>
+
+<!-- Predictor -->
+<div class="predict-panel">
+  <h3>🔮 Sales Predictor</h3>
+  <p class="calc-sub">Type any ad spend amount and instantly get the predicted sales from your regression equation: <strong>Ŷ = 2.07 + 3.57X</strong></p>
+
+  <div class="predict-input-row">
+    <span class="predict-label">If Ad Spend (X) =</span>
+    <input type="number" class="predict-input" id="predictInput" value="13" min="0" max="50" step="0.5" oninput="updatePrediction()">
+    <span class="predict-label">₹ Lakhs</span>
+    <button class="predict-btn" onclick="animPredict()">🎯 Predict!</button>
+  </div>
+
+  <div class="predict-result-row">
+    <div class="pred-card lit" id="predMain">
+      <div class="pc-label">PREDICTED SALES (Ŷ)</div>
+      <div class="pc-val" id="predVal">₹48.48L</div>
+      <div class="pc-desc">Using Ŷ = 2.07 + 3.57 × 13</div>
+    </div>
+    <div class="pred-card" id="predROI">
+      <div class="pc-label">REVENUE / RUPEE SPENT</div>
+      <div class="pc-val" id="roiVal" style="color:var(--yellow)">₹3.73</div>
+      <div class="pc-desc">Predicted sales ÷ ad spend</div>
+    </div>
+    <div class="pred-card" id="predProfit">
+      <div class="pc-label">ESTIMATED NET GAIN</div>
+      <div class="pc-val" id="gainVal" style="color:var(--purple)">₹35.48L</div>
+      <div class="pc-desc">Predicted sales − ad spend</div>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CHART
+══════════════════════════════════════════ -->
+
+<section class="page-section" id="chart">
+  <div class="section-eyebrow">04 · Live Chart</div>
+  <h2 class="section-title">See your data visually!</h2>
+  <p class="section-desc">Toggle layers on and off. Hover data points for details.</p>
+
+  <div class="chart-controls">
+    <button class="chart-ctrl-btn on yellow" id="btnDots" onclick="toggleLayer('dots',this)">🟡 Data Points</button>
+    <button class="chart-ctrl-btn on teal" id="btnLine" onclick="toggleLayer('line',this)">〰️ Regression Line</button>
+    <button class="chart-ctrl-btn on blue" id="btnLabels" onclick="toggleLayer('labels',this)">🏷️ Month Labels</button>
+    <button class="chart-ctrl-btn on" id="btnGrid" onclick="toggleLayer('grid',this)" style="color:var(--muted)">⊞ Grid</button>
+  </div>
+
+  <div class="chart-container">
+    <canvas id="scatterCanvas"></canvas>
+    <div class="chart-tip" id="chartTip">Hover over a data point to see its values</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="sb-val" style="color:var(--yellow)">0.9989</div><div class="sb-lbl">Correlation (r)</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:var(--teal)">99.78%</div><div class="sb-lbl">R² (Explained)</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:var(--coral)">3.57</div><div class="sb-lbl">Slope (b)</div></div>
+    <div class="stat-box"><div class="sb-val" style="color:var(--purple)">2.07</div><div class="sb-lbl">Intercept (a)</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     QUIZ
+══════════════════════════════════════════ -->
+
+<section class="page-section" id="quiz">
+  <div class="section-eyebrow">05 · Quiz</div>
+  <h2 class="section-title">Test yourself! 🎯</h2>
+  <p class="section-desc">8 quick questions to make sure you truly understand the assignment before you submit.</p>
+
+  <div class="quiz-container">
+    <div class="quiz-progress" id="quizProgress"></div>
+
+```
+<div class="quiz-card" id="quizCard">
+  <div class="quiz-q-num" id="qNum">Question 1 of 8</div>
+  <div class="quiz-q-text" id="qText"></div>
+  <div class="quiz-options" id="qOptions"></div>
+  <div class="quiz-feedback" id="qFeedback"></div>
+  <button class="quiz-next-btn" id="qNext" onclick="nextQuestion()">Next Question →</button>
+</div>
+
+<div class="quiz-score" id="quizScore">
+  <div class="qs-emoji" id="qsEmoji">🎉</div>
+  <div class="qs-title" id="qsTitle">Great job!</div>
+  <div class="qs-num">You scored <span class="qs-val" id="qsNum">0/8</span></div>
+  <div style="font-size:15px;color:var(--muted);margin-bottom:32px" id="qsMsg"></div>
+  <button class="quiz-restart-btn" onclick="startQuiz()">🔄 Try Again</button>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CHECKLIST
+══════════════════════════════════════════ -->
+
+<section class="page-section" id="checklist">
+  <div class="section-eyebrow">06 · Submission Checklist</div>
+  <h2 class="section-title">Ready to submit? ✅</h2>
+  <p class="section-desc">Check off each item as you complete it. Track your progress in real time.</p>
+
+  <div class="checklist-header">
+    <div class="cl-progress-ring">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="8"/>
+        <circle cx="40" cy="40" r="32" fill="none" stroke="#ffd23f" stroke-width="8"
+          stroke-dasharray="201" stroke-dashoffset="201" id="progressCircle"
+          stroke-linecap="round" style="transition:stroke-dashoffset 0.4s ease"/>
+      </svg>
+      <div class="cl-pct" id="clPct">0%</div>
+    </div>
+    <div class="cl-header-text">
+      <h3 id="clTitle">Let's get started!</h3>
+      <p id="clSubtitle">Tap each task to mark it done. You have 10 items to complete.</p>
+    </div>
+  </div>
+
+  <div class="check-section">
+    <div class="check-section-title">📄 Report Structure <span class="cs-tag" style="background:rgba(255,210,63,0.15);color:var(--yellow)">DOCUMENT</span></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Title Page</strong><span>Fill in your full name, enrollment number, subject, date on the Word document</span></div></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Variable Justification</strong><span>Write 2-3 lines explaining WHY you chose Advertising vs Sales as your variables</span></div></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Data Table</strong><span>Include the 12-month data table (Jan–Dec 2024) with X and Y columns clearly labelled</span></div></div>
+  </div>
+
+  <div class="check-section">
+    <div class="check-section-title">✍️ Manual Calculations <span class="cs-tag" style="background:rgba(255,107,107,0.15);color:var(--coral)">HANDWRITTEN</span></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Computation Table (by hand)</strong><span>Draw the table with columns X, Y, X², Y², XY and fill in all 12 rows + totals</span></div></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Correlation r (by hand)</strong><span>Show all steps using the formula — numerator, denominator, and final r value</span></div></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Regression a & b (by hand)</strong><span>Calculate slope b and intercept a step-by-step, showing X̄ and Ȳ calculations too</span></div></div>
+  </div>
+
+  <div class="check-section">
+    <div class="check-section-title">💻 Excel Analysis <span class="cs-tag" style="background:rgba(56,217,169,0.15);color:var(--teal)">SCREENSHOTS</span></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Excel CORREL() Screenshot</strong><span>Run =CORREL(B2:B13, C2:C13) and paste a screenshot showing the r value result</span></div></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Excel Regression Output Screenshot</strong><span>Data → Data Analysis → Regression → screenshot the full output table</span></div></div>
+  </div>
+
+  <div class="check-section">
+    <div class="check-section-title">📝 Interpretation & Final <span class="cs-tag" style="background:rgba(162,155,254,0.15);color:var(--purple)">WRITING</span></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Interpretation + Equation Written</strong><span>Explain r, R², slope meaning in plain English and clearly state: Ŷ = 2.07 + 3.57X</span></div></div>
+    <div class="check-item" onclick="toggleItem(this)"><div class="ci-box"></div><div class="ci-content"><strong>Both Hard Copy & Soft Copy Ready</strong><span>Print report + save digital file. Submit BOTH by 18th March 2025. No late submissions!</span></div></div>
+  </div>
+
+  <div class="deadline-banner">
+    <div class="db-icon">⏰</div>
+    <div class="db-text">
+      <h3>Deadline: 18th March 2025</h3>
+      <p>Submit both soft copy (digital) and hard copy (printed). Late submissions are NOT accepted by the professor.</p>
+    </div>
+  </div>
+</section>
+</div><!-- end .main -->
+
+<script>
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function go(id) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const ids = ['home','concept','formula','calc','chart','quiz','checklist'];
+  const idx = ids.indexOf(id);
+  if(idx >= 0) btns[idx+1].classList.add('active');
+  if(id === 'chart') setTimeout(drawScatter, 50);
+  if(id === 'calc') { drawPie(0.9978); updatePrediction(); }
+}
+
+// ═══════════════════════════════════════════
+// CONCEPT — R SCALE
+// ═══════════════════════════════════════════
+function setR(val, msg) {
+  const marker = document.getElementById('rMarker');
+  const pct = ((val + 1) / 2) * 100;
+  marker.style.left = pct + '%';
+  marker.textContent = val;
+  document.getElementById('rExplanation').innerHTML = msg;
+  document.querySelectorAll('.r-btn').forEach(b => b.classList.remove('active-r'));
+  event.target.classList.add('active-r');
+}
+
+// ═══════════════════════════════════════════
+// FORMULA TABS
+// ═══════════════════════════════════════════
+function switchFormula(id, btn) {
+  document.querySelectorAll('.fb-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('formula-corr').style.display = id==='corr' ? 'block' : 'none';
+  document.getElementById('formula-reg').style.display = id==='reg' ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const dataX = [5.0,5.5,6.0,7.0,7.5,8.0,8.5,9.0,9.5,10.0,11.0,12.0];
+const dataY = [22.0,24.5,26.0,29.0,31.0,33.5,35.0,37.0,38.5,41.0,44.0,48.0];
+const a_reg = 2.0737, b_reg = 3.5714;
+
+// ═══════════════════════════════════════════
+// CALCULATOR
+// ═══════════════════════════════════════════
+const corrDescriptions = {
+  high: '🔥 Near-perfect positive correlation! This is YOUR actual result.',
+  medium: '📈 Strong positive correlation. Ads and sales are clearly linked.',
+  weak: '📉 Moderate correlation. There is a link but it is not very strong.',
+  none: '😐 Very weak or no correlation. Knowing X tells you little about Y.'
+};
+function updateCorr(val) {
+  const v = parseInt(val);
+  const labels = ['','Very Loose','Loose','Somewhat Loose','Loose-ish','Moderate','Moderate','Fairly Tight','Tight','Very Tight','Very Tight'];
+  document.getElementById('clusterVal').textContent = labels[v] || 'Very Tight';
+  const rMap = [0,0.1,0.25,0.4,0.55,0.65,0.75,0.82,0.9,0.97,0.9989];
+  const r = rMap[v];
+  document.getElementById('corrValue').textContent = r.toFixed(4);
+  document.getElementById('rFill').style.width = (r * 100) + '%';
+  const r2 = (r*r*100).toFixed(2);
+  document.getElementById('r2Value').textContent = r2 + '%';
+  drawPie(r*r);
+  let desc;
+  if(r >= 0.95) desc = corrDescriptions.high;
+  else if(r >= 0.7) desc = corrDescriptions.medium;
+  else if(r >= 0.4) desc = corrDescriptions.weak;
+  else desc = corrDescriptions.none;
+  document.getElementById('corrDesc').textContent = desc;
+  document.getElementById('r2Desc').innerHTML = `Ad spend explains <strong>${r2}%</strong> of the variation in sales.`;
+}
+
+function drawPie(r2) {
+  const canvas = document.getElementById('pieCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,180,180);
+  const cx=90, cy=90, radius=70;
+  const angle = r2 * 2 * Math.PI;
+  // Background
+  ctx.beginPath(); ctx.arc(cx,cy,radius,0,2*Math.PI);
+  ctx.fillStyle='rgba(255,255,255,0.06)'; ctx.fill();
+  // Explained slice
+  ctx.beginPath(); ctx.moveTo(cx,cy);
+  ctx.arc(cx,cy,radius,-Math.PI/2,-Math.PI/2+angle);
+  ctx.closePath();
+  const g = ctx.createRadialGradient(cx,cy,0,cx,cy,radius);
+  g.addColorStop(0,'#ffd23f'); g.addColorStop(1,'#38d9a9');
+  ctx.fillStyle=g; ctx.fill();
+  // Unexplained slice
+  ctx.beginPath(); ctx.moveTo(cx,cy);
+  ctx.arc(cx,cy,radius,-Math.PI/2+angle,-Math.PI/2+2*Math.PI);
+  ctx.closePath(); ctx.fillStyle='rgba(255,255,255,0.06)'; ctx.fill();
+  // Labels
+  ctx.fillStyle='rgba(255,255,255,0.8)'; ctx.font='bold 13px Poppins'; ctx.textAlign='center';
+  ctx.fillText('Explained', cx, cy-10);
+  ctx.fillStyle='#ffd23f'; ctx.font='bold 17px Poppins';
+  ctx.fillText((r2*100).toFixed(1)+'%', cx, cy+12);
+}
+
+function updatePrediction() {
+  const x = parseFloat(document.getElementById('predictInput').value) || 0;
+  const pred = a_reg + b_reg * x;
+  const roi = x > 0 ? (pred / x).toFixed(2) : '—';
+  const gain = (pred - x).toFixed(2);
+  document.getElementById('predVal').textContent = '₹' + pred.toFixed(2) + 'L';
+  document.getElementById('roiVal').textContent = x > 0 ? '₹' + roi : '—';
+  document.getElementById('gainVal').textContent = '₹' + gain + 'L';
+  document.querySelector('#predMain .pc-desc').textContent = `Using Ŷ = 2.07 + 3.57 × ${x}`;
+}
+
+function animPredict() {
+  updatePrediction();
+  ['predMain','predROI','predProfit'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('glow-pop'); void el.offsetWidth;
+    el.classList.add('glow-pop');
+  });
+}
+
+// ═══════════════════════════════════════════
+// SCATTER CHART
+// ═══════════════════════════════════════════
+let layers = { dots: true, line: true, labels: true, grid: true };
+let hoveredPoint = -1;
+let chartCanvas, chartCtx, chartW, chartH;
+const pad = {l:60,r:30,t:30,b:60};
+
+function toggleLayer(name, btn) {
+  layers[name] = !layers[name];
+  btn.classList.toggle('on');
+  const colorMap = { dots:'yellow', line:'teal', labels:'blue', grid:'' };
+  if(layers[name] && colorMap[name]) btn.classList.add(colorMap[name]);
+  else btn.classList.remove('yellow','teal','blue');
+  drawScatter();
+}
+
+function initChart() {
+  chartCanvas = document.getElementById('scatterCanvas');
+  chartCtx = chartCanvas.getContext('2d');
+  const dpr = window.devicePixelRatio||1;
+  chartW = chartCanvas.parentElement.offsetWidth - 64;
+  chartH = Math.min(380, window.innerHeight * 0.45);
+  chartCanvas.style.width = chartW+'px'; chartCanvas.style.height = chartH+'px';
+  chartCanvas.width = chartW*dpr; chartCanvas.height = chartH*dpr;
+  chartCtx.scale(dpr,dpr);
+  chartCanvas.addEventListener('mousemove', onChartHover);
+  chartCanvas.addEventListener('mouseleave', ()=>{ hoveredPoint=-1; drawScatter(); document.getElementById('chartTip').textContent='Hover over a data point to see its values'; });
+}
+
+function toX(v) { return pad.l + (v-4)/(13.5-4)*(chartW-pad.l-pad.r); }
+function toY(v) { return pad.t + (52-v)/(52-16)*(chartH-pad.t-pad.b); }
+
+function drawScatter() {
+  if(!chartCanvas) { initChart(); }
+  const ctx = chartCtx;
+  ctx.clearRect(0,0,chartW,chartH);
+
+  // Grid
+  if(layers.grid) {
+    ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+    [20,30,40,50].forEach(y=>{ctx.beginPath();ctx.moveTo(pad.l,toY(y));ctx.lineTo(chartW-pad.r,toY(y));ctx.stroke();});
+    [5,6,7,8,9,10,11,12,13].forEach(x=>{ctx.beginPath();ctx.moveTo(toX(x),pad.t);ctx.lineTo(toX(x),chartH-pad.b);ctx.stroke();});
+  }
+
+  // Axes
+  ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(pad.l,pad.t); ctx.lineTo(pad.l,chartH-pad.b); ctx.lineTo(chartW-pad.r,chartH-pad.b); ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font='bold 11px Poppins'; ctx.textAlign='right';
+  [20,30,40,50].forEach(y=>ctx.fillText('₹'+y+'L',pad.l-10,toY(y)+4));
+  ctx.textAlign='center'; ctx.fillStyle='rgba(255,255,255,0.4)';
+  dataX.forEach((x,i)=>ctx.fillText(months[i],toX(x),chartH-pad.b+18));
+  ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='bold 12px Poppins';
+  ctx.fillText('Monthly Ad Spend (₹ Lakhs)',(pad.l+chartW-pad.r)/2,chartH-pad.b+40);
+  ctx.save(); ctx.translate(16,(pad.t+chartH-pad.b)/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('Sales Revenue (₹ Lakhs)',0,0); ctx.restore();
+
+  // Regression line
+  if(layers.line) {
+    const grad = ctx.createLinearGradient(toX(4),0,toX(13.5),0);
+    grad.addColorStop(0,'rgba(56,217,169,0.3)'); grad.addColorStop(1,'rgba(56,217,169,0.95)');
+    ctx.strokeStyle=grad; ctx.lineWidth=2.5; ctx.setLineDash([10,5]);
+    ctx.beginPath(); ctx.moveTo(toX(4),toY(a_reg+b_reg*4)); ctx.lineTo(toX(13.5),toY(a_reg+b_reg*13.5)); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Data points
+  if(layers.dots) {
+    dataX.forEach((x,i)=>{
+      const px=toX(x), py=toY(dataY[i]);
+      const isHov = hoveredPoint===i;
+      // Glow
+      if(isHov){
+        ctx.beginPath(); ctx.arc(px,py,16,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,210,63,0.12)'; ctx.fill();
+      }
+      // Outer ring
+      ctx.beginPath(); ctx.arc(px,py,isHov?10:7,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,210,63,0.2)'; ctx.fill();
+      // Dot
+      ctx.beginPath(); ctx.arc(px,py,isHov?7:5,0,Math.PI*2);
+      ctx.fillStyle=isHov?'#fff':'#ffd23f'; ctx.fill();
+      ctx.strokeStyle=isHov?'#ffd23f':'rgba(255,107,107,0.6)'; ctx.lineWidth=isHov?2:1.5; ctx.stroke();
+
+      // Labels
+      if(layers.labels){
+        ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='bold 10px Poppins'; ctx.textAlign='center';
+        ctx.fillText(months[i],px,py-14);
+      }
+    });
+  }
+}
+
+function onChartHover(e) {
+  if(!chartCanvas) return;
+  const rect = chartCanvas.getBoundingClientRect();
+  const mx=(e.clientX-rect.left), my=(e.clientY-rect.top);
+  let found=-1;
+  dataX.forEach((x,i)=>{
+    const px=toX(x), py=toY(dataY[i]);
+    if(Math.hypot(mx-px,my-py)<14) found=i;
+  });
+  if(found!==hoveredPoint){ hoveredPoint=found; drawScatter(); }
+  if(found>=0) {
+    document.getElementById('chartTip').innerHTML =
+      `📅 <strong>${months[found]} 2024</strong> — Ad Spend: <strong style="color:var(--yellow)">₹${dataX[found]}L</strong> → Sales: <strong style="color:var(--teal)">₹${dataY[found]}L</strong>`;
+  }
+}
+window.addEventListener('resize', ()=>{ if(document.getElementById('chart').classList.contains('active')){chartCanvas=null;drawScatter();} });
+
+// ═══════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════
+const questions = [
+  { q: "What does a correlation coefficient of r = 0.9989 tell you?", options: ["Very strong negative relationship","No relationship","Very strong positive relationship","Moderate relationship"], ans: 2, explain: "✅ r close to +1 means a very strong POSITIVE relationship. As ad spend goes up, sales go up almost perfectly together!" },
+  { q: "Which variable is the 'Independent Variable (X)' in your assignment?", options: ["Sales Revenue","Month / Time","Advertising Expenditure","Profit"], ans: 2, explain: "✅ Advertising Expenditure is X (the cause). It influences Sales — which is Y (the effect)." },
+  { q: "What does the slope b = 3.57 mean in your regression equation?", options: ["Total sales is ₹3.57 Lakhs","For every ₹1L more on ads, sales go up by ₹3.57L","Sales are 3.57 times the ad spend","The minimum sales is ₹3.57L"], ans: 1, explain: "✅ The slope (b) tells you the RATE OF CHANGE. Every extra ₹1 Lakh on ads → ₹3.57 Lakhs more in sales!" },
+  { q: "If R² = 0.9978, what does this mean?", options: ["r = 0.9978","99.78% of variation in sales is explained by ad spend","Only 0.22% of sales comes from ads","The data has 99.78% accuracy"], ans: 1, explain: "✅ R² is the coefficient of determination. 99.78% means ad spend explains nearly ALL of the changes in sales!" },
+  { q: "Using your equation Ŷ = 2.07 + 3.57X, predict sales if ad spend is ₹10 Lakhs", options: ["₹35.7 Lakhs","₹37.77 Lakhs","₹41.7 Lakhs","₹30 Lakhs"], ans: 1, explain: "✅ Ŷ = 2.07 + 3.57 × 10 = 2.07 + 35.70 = ₹37.77 Lakhs. Just plug X=10 into the equation!" },
+  { q: "What does Σ (Sigma) mean in the correlation formula?", options: ["Square root","Multiply","Sum of all values","Standard deviation"], ans: 2, explain: "✅ Σ means 'Sum of'. So ΣX means 'add up all the X values'. ΣXY means multiply each X by its Y, then add them all." },
+  { q: "What is the minimum number of data points required for this assignment?", options: ["5","10","12","15"], ans: 2, explain: "✅ The guidelines clearly state: MINIMUM 12 data points. You have exactly 12 months of data — perfect!" },
+  { q: "When submitting, what TWO things must you submit?", options: ["Only a soft copy (digital)","Only a hard copy (printed)","Both a hard copy AND a soft copy","An email and a printed copy"], ans: 2, explain: "✅ You must submit BOTH: a soft copy (digital file) AND a hard copy (printed report) — by 18th March 2025!" },
+];
+let qIdx=0, score=0, answered=false;
+
+function startQuiz() {
+  qIdx=0; score=0; answered=false;
+  document.getElementById('quizCard').style.display='block';
+  document.getElementById('quizScore').classList.remove('show');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[qIdx];
+  document.getElementById('qNum').textContent = `Question ${qIdx+1} of ${questions.length}`;
+  document.getElementById('qText').textContent = q.q;
+  const opts = document.getElementById('qOptions');
+  opts.innerHTML = '';
+  q.options.forEach((o,i)=>{
+    const btn = document.createElement('button');
+    btn.className='quiz-opt'; btn.textContent=o;
+    btn.onclick=()=>answerQ(i,btn);
+    opts.appendChild(btn);
+  });
+  document.getElementById('qFeedback').classList.remove('show');
+  document.getElementById('qNext').classList.remove('show');
+  answered=false;
+
+  const prog = document.getElementById('quizProgress');
+  prog.innerHTML='';
+  questions.forEach((_,i)=>{
+    const dot=document.createElement('div');
+    dot.className='qp-dot'+(i<qIdx?' done':i===qIdx?' current':'');
+    prog.appendChild(dot);
+  });
+}
+
+function answerQ(chosen, btn) {
+  if(answered) return;
+  answered=true;
+  const q=questions[qIdx];
+  const allOpts=document.querySelectorAll('.quiz-opt');
+  allOpts.forEach(b=>b.disabled=true);
+  const fb=document.getElementById('qFeedback');
+  if(chosen===q.ans){
+    score++;
+    btn.classList.add('correct');
+    fb.className='quiz-feedback show good';
+    fb.textContent=q.explain;
+  } else {
+    btn.classList.add('wrong');
+    allOpts[q.ans].classList.add('correct');
+    fb.className='quiz-feedback show bad';
+    fb.textContent='❌ Not quite. '+q.explain;
+  }
+  document.getElementById('qNext').classList.add('show');
+  document.getElementById('qNext').textContent = qIdx===questions.length-1 ? 'See Results 🏆' : 'Next Question →';
+}
+
+function nextQuestion() {
+  qIdx++;
+  if(qIdx>=questions.length){
+    document.getElementById('quizCard').style.display='none';
+    const scoreEl=document.getElementById('quizScore');
+    scoreEl.classList.add('show');
+    const pct=score/questions.length;
+    const emojis=['😬','🤔','👍','🎉'];
+    const msgs=["Keep studying — use the Concept and Formula tabs to review!","Good effort! A couple more reads and you'll nail it.","Very solid! You understand the key concepts.","Perfect score! You're ready to submit with confidence! 🚀"];
+    const tier=pct<0.5?0:pct<0.75?1:pct<1?2:3;
+    document.getElementById('qsEmoji').textContent=emojis[tier];
+    document.getElementById('qsTitle').textContent=["Keep Practising!","Getting There!","Well Done!","Perfect! 🚀"][tier];
+    document.getElementById('qsNum').textContent=score+'/'+questions.length;
+    document.getElementById('qsMsg').textContent=msgs[tier];
+  } else {
+    renderQuestion();
+  }
+}
+
+// ═══════════════════════════════════════════
+// CHECKLIST
+// ═══════════════════════════════════════════
+function toggleItem(el) {
+  el.classList.toggle('done');
+  el.querySelector('.ci-box').textContent = el.classList.contains('done') ? '✓' : '';
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = document.querySelectorAll('.check-item').length;
+  const done  = document.querySelectorAll('.check-item.done').length;
+  const pct   = Math.round(done/total*100);
+  const circumference = 2*Math.PI*32;
+  document.getElementById('progressCircle').style.strokeDashoffset = circumference*(1-done/total);
+  document.getElementById('clPct').textContent = pct+'%';
+  const titles=['Let\'s get started!','Good progress!','Halfway there!','Almost done!','All done! 🎉'];
+  const tier = done===0?0:done<3?1:done<6?2:done<total?3:4;
+  document.getElementById('clTitle').textContent=titles[tier];
+  document.getElementById('clSubtitle').textContent = done===total
+    ? '🎉 Everything is complete! You\'re ready to submit!'
+    : `${done} of ${total} items completed — keep going!`;
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+startQuiz();
+drawPie(0.9978);
+updatePrediction();
+</script>
+
+</body>
+</html>
